@@ -1,4 +1,4 @@
-package com.haily.zhixing_travel_assistant_backend.model;
+package com.haily.zhixing_travel_assistant_backend.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -9,24 +9,18 @@ import lombok.Data;
 import java.time.OffsetDateTime;
 
 @Data
+@TableName("conversation")
 @Builder
-@TableName("\"user\"") //user在postgresql是关键字，得用双引号括起来
-public class User {
+public class Conversation {
 
     @TableId("id")
     private String id;
 
-    @TableField("username")
-    private String username;
+    @TableField("user_id")
+    private String userId;
 
-    @TableField("email")
-    private String email;
-
-    @TableField("password_hash")
-    private String passwordHash;
-
-    @TableField("preferences")
-    private String preferences;
+    @TableField("title")
+    private String title;
 
     @TableField("created_at")
     private OffsetDateTime createdAt;

@@ -7,7 +7,7 @@ import com.haily.zhixing_travel_assistant_backend.cache.UserCache;
 import com.haily.zhixing_travel_assistant_backend.enums.CommonError;
 import com.haily.zhixing_travel_assistant_backend.exception.BusinessException;
 import com.haily.zhixing_travel_assistant_backend.mapper.UserMapper;
-import com.haily.zhixing_travel_assistant_backend.model.User;
+import com.haily.zhixing_travel_assistant_backend.model.entity.User;
 import com.haily.zhixing_travel_assistant_backend.model.dto.LoginRequest;
 import com.haily.zhixing_travel_assistant_backend.model.dto.RegisterRequest;
 import com.haily.zhixing_travel_assistant_backend.model.dto.UserInfo;
