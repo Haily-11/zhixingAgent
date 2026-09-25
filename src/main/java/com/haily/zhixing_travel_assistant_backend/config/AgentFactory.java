@@ -1,42 +1,156 @@
 package com.haily.zhixing_travel_assistant_backend.config;
 
-import com.haily.zhixing_travel_assistant_backend.service.ChatService;
+import com.haily.zhixing_travel_assistant_backend.agent.accommodation.AccommodationPlannerService;
+import com.haily.zhixing_travel_assistant_backend.agent.food.FoodPlannerService;
+import com.haily.zhixing_travel_assistant_backend.agent.requirement.RequirementAgentService;
+import com.haily.zhixing_travel_assistant_backend.agent.transportation.TransportPlannerService;
+import com.haily.zhixing_travel_assistant_backend.agent.transportation.subagents.DrivingTransportSubService;
+import com.haily.zhixing_travel_assistant_backend.agent.transportation.subagents.FlightTransportSubService;
+import com.haily.zhixing_travel_assistant_backend.agent.transportation.subagents.TrainTransportSubService;
+import dev.langchain4j.mcp.McpToolProvider;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
+import dev.langchain4j.rag.content.retriever.ContentRetriever;
 import dev.langchain4j.service.AiServices;
+import dev.langchain4j.store.memory.chat.ChatMemoryStore;
+import dev.langchain4j.store.memory.chat.InMemoryChatMemoryStore;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * 为ChatService接口创建动态代理实例
- */
-@Configuration
-public class AgentFactory {
 
-    /**
-     * 普通对话模型，调用后一次性返回完整结果
-     */
+@Configuration
+public class AgentFactory implements ApplicationContextAware {
+
     @Autowired
     private ChatModel chatModel;
 
-    /**
-     * 流式对话模型，调用后逐步返回 token
-     */
     @Autowired
     private StreamingChatModel streamingChatModel;
 
+    private ApplicationContext applicationContext;
+
+
+    public <T> T getAgent(Class<T> agentClass) {
+        return applicationContext.getBean(agentClass);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
     @Bean
-    public ChatService nomalService() {
-        return AiServices.builder(ChatService.class)
+    public AccommodationPlannerService accommodationPlannerService() {
+        return AiServices.builder(AccommodationPlannerService.class)
                 .chatModel(chatModel)
                 .streamingChatModel(streamingChatModel)
                 .chatMemoryProvider(memoryId ->
                         MessageWindowChatMemory.builder()
-                                .id(memoryId)
+                                .id("accommodation:" + memoryId)
+                                .chatMemoryStore(new InMemoryChatMemoryStore())
+                                .maxMessages(20)
+                                .build()
+                )
+                .build();
+    }
+
+    @Bean
+    public FoodPlannerService foodPlannerService() {
+        return AiServices.builder(FoodPlannerService.class)
+                .chatModel(chatModel)
+                .streamingChatModel(streamingChatModel)
+                .chatMemoryProvider(memoryId ->
+                        MessageWindowChatMemory.builder()
+                                .id("food:" + memoryId)
+                                .chatMemoryStore(new InMemoryChatMemoryStore())
                                 .maxMessages(1000)
-                                .build())
+                                .build()
+                )
+                .build();
+    }
+
+
+    @Bean
+    public TransportPlannerService transportPlannerService() {
+        return AiServices.builder(TransportPlannerService.class)
+                .chatModel(chatModel)
+                .streamingChatModel(streamingChatModel)
+                .chatMemoryProvider(memoryId ->
+                        MessageWindowChatMemory.builder()
+                                .id("transport:" + memoryId)
+                                .chatMemoryStore(new InMemoryChatMemoryStore())
+                                .maxMessages(20)
+                                .build()
+                )
+                .build();
+    }
+
+    @Bean
+    public RequirementAgentService requirementAgentService() {
+        return AiServices.builder(RequirementAgentService.class)
+                .chatModel(chatModel)
+                .streamingChatModel(streamingChatModel)
+                .chatMemoryProvider(memoryId ->
+                        MessageWindowChatMemory.builder()
+                                .id("requirement:" + memoryId)
+                                .chatMemoryStore(new InMemoryChatMemoryStore())
+                                .maxMessages(20)
+                                .build()
+                )
+                .build();
+    }
+
+
+    @Bean
+    public DrivingTransportSubService drivingTransportSubService() {
+        return AiServices.builder(DrivingTransportSubService.class)
+                .chatModel(chatModel)
+                .streamingChatModel(streamingChatModel)
+                .chatMemoryProvider(memoryId ->
+                        MessageWindowChatMemory.builder()
+                                .id("driving:" + memoryId)
+                                .chatMemoryStore(new InMemoryChatMemoryStore())
+                                .maxMessages(20)
+                                .build()
+                )
+                .build();
+    }
+
+
+    @Bean
+    public FlightTransportSubService flightTransportSubService() {
+        return AiServices.builder(FlightTransportSubService.class)
+                .chatModel(chatModel)
+                .streamingChatModel(streamingChatModel)
+                .chatMemoryProvider(memoryId ->
+                        MessageWindowChatMemory.builder()
+                                .id("flight:" + memoryId)
+                                .chatMemoryStore(new InMemoryChatMemoryStore())
+                                .maxMessages(20)
+                                .build()
+                )
+                .build();
+    }
+
+
+    @Bean
+    public TrainTransportSubService trainTransportSubService() {
+        return AiServices.builder(TrainTransportSubService.class)
+                .chatModel(chatModel)
+                .streamingChatModel(streamingChatModel)
+                .chatMemoryProvider(memoryId ->
+                        MessageWindowChatMemory.builder()
+                                .id("train:" + memoryId)
+                                .chatMemoryStore(new InMemoryChatMemoryStore())
+                                .maxMessages(20)
+                                .build()
+                )
                 .build();
     }
 }

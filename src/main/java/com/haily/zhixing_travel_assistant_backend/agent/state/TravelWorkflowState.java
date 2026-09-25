@@ -45,11 +45,19 @@ public class TravelWorkflowState extends AgentState {
     }
 
 
+    /**
+     * 构造器
+     * @param data
+     */
     public TravelWorkflowState(Map<String, Object> data) {
         super(data);
     }
 
 
+    /**
+     * 每个字段的访问器
+     * @return
+     */
     public String drivingTransportOutput() {
         return this.<String>value("drivingTransportOutput").orElse("");
     }
