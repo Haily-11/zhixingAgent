@@ -160,7 +160,7 @@ public class RequirementAgent {
         workflow.addNode("foodPlan", AsyncNodeAction.node_async(state -> {
             log.info("STATE before node=foodPlan {}", state);
             log.info("正在执行foodPlan");
-            String res = foodPlannerAgent.execute(state.sessionId(), state.requirements().getDestination());
+                String res = foodPlannerAgent.execute(state.sessionId(), state.requirements().getDestination());
 //            log.info("foodPlan AI的回复:{}", res);
             Map<String, Object> updates = Map.of("foodOutput", res, "nextStep", "assemble");
             log.info("UPDATES node=foodPlan {}", updates);

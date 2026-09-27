@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class DrivingTransportSubAgent {
+public class  DrivingTransportSubAgent {
 
     @Autowired
     private DrivingTransportSubService drivingTransportSubService;

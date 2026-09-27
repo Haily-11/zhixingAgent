@@ -18,6 +18,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     private final CollectionInterceptor collectionInterceptor;
 
+    /**
+     * 配置异步支持
+     * @param configurer
+     */
     @Override
     public void configureAsyncSupport(@NonNull AsyncSupportConfigurer configurer) {
         configurer.setTaskExecutor(taskExecutor);

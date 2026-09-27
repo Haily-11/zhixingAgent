@@ -1,7 +1,7 @@
 package com.haily.zhixing_travel_assistant_backend.utils;
 
 public class RedisKeys {
-    public final static String PREFIX = "shanyangcode:zhixing:";
+    public final static String PREFIX = "hailycode:zhixing:";
 
 
     public final static String USER_AUTH_TOKEN_PREFIX = PREFIX + "user:auth:";
@@ -21,3 +21,7 @@ public class RedisKeys {
     }
 
 }
+
+//按业务模块再细分，形成 项目:模块:功能 的三级结构
+//最终 key 类似：shanyangcode:zhixing:user:auth:12345
+//一眼就能看出这个 key 属于哪个业务，方便排查问题

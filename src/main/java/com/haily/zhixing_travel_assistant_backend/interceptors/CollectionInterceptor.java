@@ -20,13 +20,23 @@ public class CollectionInterceptor implements HandlerInterceptor {
     public static final String HEADER_AUTHORIZATION = "Authorization";
     public static final String AUTHORIZATION_SCHEMA = "Bearer ";
 
+    /**
+     * 拦截器，在请求处理之前进行拦截
+     * @param request
+     * @param response
+     * @param handler
+     * @return
+     * @throws Exception
+     */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        //预检请求直接通过
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             return true;
         }
+        //获取Authorization头
         String authorization = request.getHeader(HEADER_AUTHORIZATION);
-
+        //如果Authorization头为空或不以Bearer开头，则返回参数错误
 
         if (authorization == null || !authorization.startsWith(AUTHORIZATION_SCHEMA)) {
             throw new BusinessException(CommonError.PARAMS_ERROR.getCode(), "Authorization 不能为空");
