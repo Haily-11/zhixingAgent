@@ -36,17 +36,23 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public Flux<String> chat(String userId, String sessionId, String prompt) {
         return Mono.fromCallable(() -> {
+            //1.确保会话存在 + 存用户消息
                     ensureConversationExists(userId, sessionId);
                     insertMessage(sessionId, (short) 1, prompt);
                     return true;
                 })
                 .subscribeOn(Schedulers.boundedElastic())
+                //2.执行AI工作流requirementAgent.executeState(sessionId, prompt)
                 .then(requirementAgent.executeState(sessionId, prompt))
                 .flatMap(state -> Mono.fromCallable(() -> {
+                    //3.保存AI回复
+                            //3.1 获取AI回复
                             String output = state.output();
+                            //3.2 插入AI回复
                             insertMessage(sessionId, (short) 2, output);
+                            //3.3 更新会话最后更新时间
                             updateConversationUpdatedAt(sessionId);
-
+                            //3.4 存储会话计划
                             java.util.Map<String, Object> value = new java.util.HashMap<>();
                             value.put("requirements", state.requirements());
                             value.put("output", output);
@@ -58,6 +64,12 @@ public class ChatServiceImpl implements ChatService {
                 .flatMapMany(Flux::just);
     }
 
+    /**
+     *
+     * 确保会话存在：先查，存在就什么都不做；不存在才创建并插入。
+     * @param userId
+     * @param conversationId
+     */
     private void ensureConversationExists(String userId, String conversationId) {
         Conversation existing = conversationMapper.selectOne(new LambdaQueryWrapper<Conversation>()
                 .eq(Conversation::getId, conversationId)

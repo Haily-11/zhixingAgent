@@ -33,6 +33,11 @@ public class RedisChatMemoryStoreConfig {
     @Value("${spring.data.redis.timeout}")
     private long ttl;
 
+    /**
+     * jedisPooled是redis的连接池： 内部维护的是一批到 Redis 的连接，不是线程。
+     * 这就是“连接池”的意义：复用连接，省去每次新建 TCP 连接的开销
+     * @return
+     */
     @Bean
     public JedisPooled jedisPooled() {
         HostAndPort hostAndPort = new HostAndPort(host, port);
